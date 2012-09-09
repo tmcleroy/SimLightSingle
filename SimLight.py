@@ -204,7 +204,7 @@ while True:
     #track seconds passed
     if frameCount % __FRAMERATE == 0:
         secondsPassed += 1
-
+    """
     #every 6 seconds
     if frameCount % (__FRAMERATE*6) == 0:
         spawnCar(rd2, rd2.lane1, random.randint(-100, 100))
@@ -218,7 +218,7 @@ while True:
         spawnCar(rd1, rd1.lane2, random.randint(-100, 100))
         spawnCar(rd3, rd3.lane1, random.randint(-100, 100))
         spawnCar(rd3, rd3.lane2, random.randint(-100, 100))    
-
+    """
 
     #generates the info text labels. These must be
     #in multiple labels because the font renderer
@@ -250,7 +250,7 @@ while True:
 
 
 
-    #cont.auto(frameCount, "mostPopulated")
+    cont.auto("mostPopulated")
     
     for car in cars:
         car.display(screen)

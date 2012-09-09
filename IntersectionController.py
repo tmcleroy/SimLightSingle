@@ -23,35 +23,17 @@ class IntersectionController:
         self.prev = self.getMostPopulatedRoad()
         self.prevfc = 0
 
-        t = Timer(5, self.setAll, ["stop"])
-        t.start()
-        
-
-
-
-    """
-    def auto(self, fc, mode):
-        if mode == "mostPopulated":
-            #if the most populated road changes from even to odd, set the frame count
-            if not (self.getMostPopulatedRoad().isEven() == self.prev.isEven()): self.prevfc = fc
-            if self.getMostPopulatedRoad().isEven():
-                self.evenStraightFlow(fc)
-            else:
-                self.oddStraightFlow(fc)
-            self.prev = self.getMostPopulatedRoad()
-    """
 
     def auto(self, mode):
         if mode == "mostPopulated":
             #if the most populated road changes from even to odd, change flow
             if not (self.getMostPopulatedRoad().isEven() == self.prev.isEven()):
                 if self.getMostPopulatedRoad().isEven():
-                    self.evenStraightFlow(fc)
+                    self.evenStraightFlow()
                 else:
-                    self.oddStraightFlow(fc)
+                    self.oddStraightFlow()
             self.prev = self.getMostPopulatedRoad()
-            
-            
+                    
 
     def getMostPopulatedRoad(self):
         #default
@@ -61,29 +43,24 @@ class IntersectionController:
         return max
 
 
-    def oddStraightFlow(self, fc):
-        self.setStateXtoY("go", "slow")
-        t = Timer(3, self.setOddEvenState, ["odd","go"]
-        u = Timer(3, self.setOddEvenState, ["even","stop"]
-        t.start
-        u.start
+    def oddStraightFlow(self):
+        self.setStatesXtoY("go", "slow")
+        t = Timer(3, self.setOddEvenState, ["odd","go"])
+        u = Timer(3, self.setOddEvenState, ["even","stop"])
+        t.start()
+        u.start()
+        v = Timer(7, self.auto, ["mostPopulated"])
+        v.start()
 
+    def evenStraightFlow(self):
+        self.setStatesXtoY("go", "slow")
+        t = Timer(3, self.setOddEvenState, ["odd","stop"])
+        u = Timer(3, self.setOddEvenState, ["even","go"])
+        t.start()
+        u.start()
+        v = Timer(7, self.auto, ["mostPopulated"])
+        v.start()
 
-
-
-    def evenStraightFlow(self, fc):
-        if fc - self.prevfc < 360:
-            for pole in self.poles:
-                if pole.light1.state == "go": pole.light1.setState("slow")
-                if pole.light2.state == "go": pole.light2.setState("slow")
-        else:
-            for pole in self.oddPoles:
-                pole.light1.setState("stop")
-                pole.light2.setState("stop")
-
-            for pole in self.evenPoles:
-                pole.light1.setState("go")
-                pole.light2.setState("go")
 
 
     def oddLeftOnlyFlow(self):
