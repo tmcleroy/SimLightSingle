@@ -1,4 +1,5 @@
-import time
+import time, threading
+from threading import *
 
 
 class IntersectionController:
@@ -21,9 +22,14 @@ class IntersectionController:
 
         self.prev = self.getMostPopulatedRoad()
         self.prevfc = 0
+
+        t = Timer(5, self.setAll, ["stop"])
+        t.start()
         
 
 
+
+    """
     def auto(self, fc, mode):
         if mode == "mostPopulated":
             #if the most populated road changes from even to odd, set the frame count
@@ -32,6 +38,17 @@ class IntersectionController:
                 self.evenStraightFlow(fc)
             else:
                 self.oddStraightFlow(fc)
+            self.prev = self.getMostPopulatedRoad()
+    """
+
+    def auto(self, mode):
+        if mode == "mostPopulated":
+            #if the most populated road changes from even to odd, change flow
+            if not (self.getMostPopulatedRoad().isEven() == self.prev.isEven()):
+                if self.getMostPopulatedRoad().isEven():
+                    self.evenStraightFlow(fc)
+                else:
+                    self.oddStraightFlow(fc)
             self.prev = self.getMostPopulatedRoad()
             
             
@@ -45,18 +62,13 @@ class IntersectionController:
 
 
     def oddStraightFlow(self, fc):
-        if fc - self.prevfc < 360:
-            for pole in self.poles:
-                if pole.light1.state == "go": pole.light1.setState("slow")
-                if pole.light2.state == "go": pole.light2.setState("slow")
-        else:   
-            for pole in self.oddPoles:
-                pole.light1.setState("go")
-                pole.light2.setState("go")
+        self.setStateXtoY("go", "slow")
+        t = Timer(3, self.setOddEvenState, ["odd","go"]
+        u = Timer(3, self.setOddEvenState, ["even","stop"]
+        t.start
+        u.start
 
-            for pole in self.evenPoles:
-                pole.light1.setState("stop")
-                pole.light2.setState("stop")
+
 
 
     def evenStraightFlow(self, fc):
@@ -103,6 +115,25 @@ class IntersectionController:
             if self.poles.index(pole) != road:
                 pole.light1.setState("stop")
                 pole.light2.setState("stop")
+
+    #iterates through each pole and sets it's
+    #lights states to y if they are currently x
+    def setStatesXtoY(self, x, y):
+        for pole in self.poles:
+            if pole.light1.state == x: pole.light1.setState(y)
+            if pole.light2.state == x: pole.light2.setState(y)
+
+    #oe is either "odd" or "even", state is the state to
+    #which either all odds or evens will be set
+    def setOddEvenState(self, oe, state):
+        if   oe == "odd":                        
+            for pole in self.oddPoles:
+                pole.light1.setState(state)
+                pole.light2.setState(state)
+        elif oe == "even":
+            for pole in self.evenPoles:
+                pole.light1.setState(state)
+                pole.light2.setState(state)                          
 
 
     def setAll(self, state):

@@ -250,7 +250,7 @@ while True:
 
 
 
-    cont.auto(frameCount, "mostPopulated")
+    #cont.auto(frameCount, "mostPopulated")
     
     for car in cars:
         car.display(screen)
