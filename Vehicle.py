@@ -2,10 +2,8 @@ import pygame, math
 pygame.init()
 
 
-
-size = width, height = 1280, 720
-
 #positioning variables
+size = width, height = 1280, 720
 middleX = int(width/2)
 middleY = int(height/2)
 roadWidth = 80
@@ -13,8 +11,8 @@ laneWidth = 40
 poleWidth = 80
 poleHeight = 15
 
-#should be 39 according to the equation
-#Pixels to stop = 39 * speed
+#should be 39 according to the equation describing 
+#how fast a vehicle stops...Pixels to stop = 39 * speed
 eq = 39
 
 #degrees in radians that define car movement direction
@@ -68,6 +66,7 @@ class Vehicle:
             self.poleSlow = self.poleStop/2
             self.image = pygame.image.load(image)
             self.rect = self.image.get_rect()
+            print (type(self.image))
         elif self.road.id==2:
             self.angle = left
             self.poleStop = self.pole.x+(roadWidth*2)+poleHeight

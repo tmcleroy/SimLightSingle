@@ -7,6 +7,15 @@ from Vehicle import *
 from IntersectionController import *
 
 
+#color and filename variables
+black = 0, 0, 0
+white = (255,255,255)
+red = (255,0,0)
+green = (0,255,0)
+blue = (0,0,244)
+grey = (150, 150, 150)
+dark_grey = (90, 95, 90)
+fname = "car.png"
 
 #positioning variables
 middleX = width/2
@@ -15,15 +24,8 @@ roadWidth = 80
 laneWidth = 40
 poleWidth = 80
 poleHeight = 15
+poleColor = dark_grey
 
-#color and filename variables
-black = 0, 0, 0
-white = (255,255,255)
-red = (255,0,0)
-green = (0,255,0)
-blue = (0,0,244)
-grey = (150, 150, 150)
-fname = "car.png"
 
 #the list that will contain all cars
 cars = []
@@ -68,33 +70,40 @@ r4RectHeight = roadWidth
 r4RectX = 0
 r4RectY = (height/2)
 r4Rect = (r4RectX, r4RectY, r4RectWidth, r4RectHeight)
-r1DividerVec2 = [((width/2)-(laneWidth),0),((width/2)-(laneWidth),height)]
-r2DividerVec2 = [(0,(height/2)-(laneWidth)),(width,(height/2)-(laneWidth))]
-r3DividerVec2 = [((width/2)+(laneWidth),0),((width/2)+(laneWidth),height)]
-r4DividerVec2 = [(0,(height/2)+(laneWidth)),(width,(height/2)+(laneWidth))]
 
+medians = []
+medians.append([((width/2),0),((width/2),(height/2)-roadWidth-1)])
+medians.append([(width,(height/2)),((width/2)+roadWidth,(height/2))])
+medians.append([((width/2),height),((width/2),(height/2)+roadWidth)])
+medians.append([(0,(height/2)),((width/2)-roadWidth-1,(height/2))])
+"""
+divs.append([((width/2)-(laneWidth),0),((width/2)-(laneWidth),(height/2)-roadWidth-2)])
+divs.append([((width/2)+(laneWidth),0),((width/2)+(laneWidth),(height/2)-roadWidth-2)])
+divs.append([(0,(height/2)-(laneWidth)),((width/2)-roadWidth-2,(height/2)-(laneWidth))])
+divs.append([(0,(height/2)+(laneWidth)),((width/2)-roadWidth-2,(height/2)+(laneWidth))])
+"""
 
 #create the lightpoles
 lp1X = middleX - roadWidth
 lp1Y = middleY + roadWidth
 lp1Width = poleWidth
 lp1Height = poleHeight
-lp1 = LightPole(1, Light(1, "go"), Light(2, "go"), lp1X, lp1Y, lp1Width, lp1Height, grey)
+lp1 = LightPole(1, Light(1, "go"), Light(2, "go"), lp1X, lp1Y, lp1Width, lp1Height, poleColor)
 lp2X = middleX - roadWidth - poleHeight
 lp2Y = middleY - roadWidth
 lp2Width = poleHeight
 lp2Height = poleWidth
-lp2 = LightPole(2, Light(1, "stop"), Light(2, "stop"), lp2X, lp2Y, lp2Width, lp2Height, grey)
+lp2 = LightPole(2, Light(1, "stop"), Light(2, "stop"), lp2X, lp2Y, lp2Width, lp2Height, poleColor)
 lp3X = middleX
 lp3Y = middleY - roadWidth - poleHeight
 lp3Width = poleWidth
 lp3Height = poleHeight
-lp3 = LightPole(3, Light(1, "go"), Light(2, "go"), lp3X, lp3Y, lp3Width, lp3Height, grey)
+lp3 = LightPole(3, Light(1, "go"), Light(2, "go"), lp3X, lp3Y, lp3Width, lp3Height, poleColor)
 lp4X = middleX + roadWidth
 lp4Y = middleY
 lp4Width = poleHeight
 lp4Height = poleWidth
-lp4 = LightPole(4, Light(1, "stop"), Light(2, "stop"), lp4X, lp4Y, lp4Width, lp4Height, grey)
+lp4 = LightPole(4, Light(1, "stop"), Light(2, "stop"), lp4X, lp4Y, lp4Width, lp4Height, poleColor)
 
 #create the roads
 rd1 = Road(1,Lane(1, ["straight"]),Lane(2, ["straight"]))
@@ -245,15 +254,18 @@ while True:
     
 
     #draw the shapes that make up the intersection
-    pygame.draw.rect(screen, black, r1Rect, 2)
-    pygame.draw.rect(screen, black, r2Rect, 2)
-    pygame.draw.rect(screen, black, r3Rect, 2)
-    pygame.draw.rect(screen, black, r4Rect, 2)
+    pygame.draw.rect(screen, grey, r1Rect, 0)
+    pygame.draw.rect(screen, grey, r2Rect, 0)
+    pygame.draw.rect(screen, grey, r3Rect, 0)
+    pygame.draw.rect(screen, grey, r4Rect, 0)
+    for median in medians: pygame.draw.lines(screen, black, False, median, 3)
+
+    """
     pygame.draw.lines(screen, black, False, r1DividerVec2, 1)
     pygame.draw.lines(screen, black, False, r2DividerVec2, 1)
     pygame.draw.lines(screen, black, False, r3DividerVec2, 1)
     pygame.draw.lines(screen, black, False, r4DividerVec2, 1)
-
+    """
 
 
 
