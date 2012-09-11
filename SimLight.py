@@ -13,6 +13,7 @@ white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 blue = (0,0,244)
+yellow = (255,255,0)
 grey = (150, 150, 150)
 dark_grey = (90, 95, 90)
 fname = "car.png"
@@ -29,6 +30,10 @@ poleColor = dark_grey
 
 #the list that will contain all cars
 cars = []
+roads = []
+medians = []
+divs = []
+poles = []
 
 #the list I will use to keep track of the number
 #of cars that pass through the intersection
@@ -40,7 +45,7 @@ pygame.init()
 
 #framerate of the simulation. The screen will refresh this
 #many times per second
-__FRAMERATE = 120
+framerate = 120
 
 #dimensions of the simulation window
 size = width, height = 1280, 720
@@ -50,38 +55,46 @@ size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
 
 #create the rectangles and lines that represent roads
-r1RectWidth = roadWidth
-r1RectHeight = height
-r1RectX = (width/2) - (r1RectWidth)
-r1RectY = -1
-r1Rect = (r1RectX, r1RectY, r1RectWidth, r1RectHeight)
-r2RectWidth = width
-r2RectHeight = roadWidth
-r2RectX = 0
-r2RectY = (height/2) - (r2RectHeight)
-r2Rect = (r2RectX, r2RectY, r2RectWidth, r2RectHeight)
-r3RectWidth = roadWidth
-r3RectHeight = height
-r3RectX = (width/2)
-r3RectY = -1
-r3Rect = (r3RectX, r3RectY, r3RectWidth, r3RectHeight)
-r4RectWidth = width
-r4RectHeight = roadWidth
-r4RectX = 0
-r4RectY = (height/2)
-r4Rect = (r4RectX, r4RectY, r4RectWidth, r4RectHeight)
+r1Width = roadWidth
+r1Height = height
+r1X = (width/2) - (r1Width)
+r1Y = -1
+r1 = (r1X, r1Y, r1Width, r1Height)
+r2Width = width
+r2Height = roadWidth
+r2X = 0
+r2Y = (height/2) - (r2Height)
+r2 = (r2X, r2Y, r2Width, r2Height)
+r3Width = roadWidth
+r3Height = height
+r3X = (width/2)
+r3Y = -1
+r3 = (r3X, r3Y, r3Width, r3Height)
+r4Width = width
+r4Height = roadWidth
+r4X = 0
+r4Y = (height/2)
+r4 = (r4X, r4Y, r4Width, r4Height)
+roads.append(r1)
+roads.append(r2)
+roads.append(r3)
+roads.append(r4)
 
-medians = []
 medians.append([((width/2),0),((width/2),(height/2)-roadWidth-1)])
 medians.append([(width,(height/2)),((width/2)+roadWidth,(height/2))])
 medians.append([((width/2),height),((width/2),(height/2)+roadWidth)])
 medians.append([(0,(height/2)),((width/2)-roadWidth-1,(height/2))])
-"""
-divs.append([((width/2)-(laneWidth),0),((width/2)-(laneWidth),(height/2)-roadWidth-2)])
-divs.append([((width/2)+(laneWidth),0),((width/2)+(laneWidth),(height/2)-roadWidth-2)])
-divs.append([(0,(height/2)-(laneWidth)),((width/2)-roadWidth-2,(height/2)-(laneWidth))])
-divs.append([(0,(height/2)+(laneWidth)),((width/2)-roadWidth-2,(height/2)+(laneWidth))])
-"""
+
+for x in range(28):
+    divs.append([(20*x+5,(height/2)-laneWidth),(20*x+12,(height/2)-laneWidth)])
+    divs.append([(20*x+5,(height/2)+laneWidth),(20*x+12,(height/2)+laneWidth)])
+    divs.append([((20*x+5)+(width/2)+roadWidth,(height/2)-laneWidth),((20*x+12)+(width/2)+roadWidth,(height/2)-laneWidth)])
+    divs.append([((20*x+5)+(width/2)+roadWidth,(height/2)+laneWidth),((20*x+12)+(width/2)+roadWidth,(height/2)+laneWidth)])
+    if x < 14:
+        divs.append([((width/2)-laneWidth,20*x+5),((width/2)-laneWidth,20*x+12)])
+        divs.append([((width/2)+laneWidth,20*x+5),((width/2)+laneWidth,20*x+12)])
+        divs.append([((width/2)-laneWidth,(20*x+5)+(height/2)+roadWidth),((width/2)-laneWidth,(20*x+12)+(height/2)+roadWidth)])
+        divs.append([((width/2)+laneWidth,(20*x+5)+(height/2)+roadWidth),((width/2)+laneWidth,(20*x+12)+(height/2)+roadWidth)])
 
 #create the lightpoles
 lp1X = middleX - roadWidth
@@ -104,6 +117,10 @@ lp4Y = middleY
 lp4Width = poleHeight
 lp4Height = poleWidth
 lp4 = LightPole(4, Light(1, "stop"), Light(2, "stop"), lp4X, lp4Y, lp4Width, lp4Height, poleColor)
+poles.append(lp1)
+poles.append(lp2)
+poles.append(lp3)
+poles.append(lp4)
 
 #create the roads
 rd1 = Road(1,Lane(1, ["straight"]),Lane(2, ["straight"]))
@@ -119,7 +136,6 @@ Clock = pygame.time.Clock()
 #text within the game loop
 Font = pygame.font.Font(None, 36)
 
-#start the frame count and seconds passed at 0
 frameCount = 0
 secondsPassed = 0
 
@@ -195,16 +211,10 @@ def spawnCar(road, lane, os):
 
 
 
-
-#spawnCar(1)
-#spawnCar(2)
-
-#GAME LOOP. This will run every frame until the
-#program is closed
+#GAME LOOP. This will run every frame (120 times per second) until the program is closed
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit(); sys.exit();
+        if event.type == pygame.QUIT: pygame.quit(); sys.exit();
 
     #the screen must be erased every frame, the additional
     #elements are then redrawn over the white surface after their
@@ -212,24 +222,22 @@ while True:
     screen.fill(white)
 
     #limit framerate
-    ms = Clock.tick(__FRAMERATE)
+    ms = Clock.tick(framerate)
 
-    #increment frame count
+    #increment frame count and track seconds passed
     frameCount += 1
-
-    #track seconds passed
-    if frameCount % __FRAMERATE == 0:
-        secondsPassed += 1
+    if frameCount % framerate == 0: secondsPassed += 1
+    
     """
     #every 6 seconds
-    if frameCount % (__FRAMERATE*6) == 0:
+    if frameCount % (framerate*6) == 0:
         spawnCar(rd2, rd2.lane1, random.randint(-100, 100))
         spawnCar(rd2, rd2.lane2, random.randint(-100, 100))
         spawnCar(rd4, rd4.lane1, random.randint(-100, 100))
         spawnCar(rd4, rd4.lane2, random.randint(-100, 100))
 
     #every 2 seconds
-    if frameCount % (__FRAMERATE*2) == 0:
+    if frameCount % (framerate*2) == 0:
         spawnCar(rd1, rd1.lane1, random.randint(-100, 100))
         spawnCar(rd1, rd1.lane2, random.randint(-100, 100))
         spawnCar(rd3, rd3.lane1, random.randint(-100, 100))
@@ -253,20 +261,10 @@ while True:
     secondsLabel = Font.render(secondsText, 1, black)
     
 
-    #draw the shapes that make up the intersection
-    pygame.draw.rect(screen, grey, r1Rect, 0)
-    pygame.draw.rect(screen, grey, r2Rect, 0)
-    pygame.draw.rect(screen, grey, r3Rect, 0)
-    pygame.draw.rect(screen, grey, r4Rect, 0)
+    #draw the road features
+    for road in roads: pygame.draw.rect(screen, grey, road, 0)
     for median in medians: pygame.draw.lines(screen, black, False, median, 3)
-
-    """
-    pygame.draw.lines(screen, black, False, r1DividerVec2, 1)
-    pygame.draw.lines(screen, black, False, r2DividerVec2, 1)
-    pygame.draw.lines(screen, black, False, r3DividerVec2, 1)
-    pygame.draw.lines(screen, black, False, r4DividerVec2, 1)
-    """
-
+    for div in divs: pygame.draw.lines(screen, yellow, False, div, 2)
 
 
     cont.auto("mostPopulated")
@@ -279,7 +277,7 @@ while True:
             cars.remove(car) 
 
     
-    #handle keyboard events
+    #handle keyboard input
     if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
                 if frameCount%10 == 0:
@@ -326,12 +324,9 @@ while True:
             elif event.key == pygame.K_o:
                 cont.setAll("stop")
 
-    #draw the lightpoles after the cars so the cars appear to
-    #be underneath them
-    lp1.display(screen)
-    lp2.display(screen)
-    lp3.display(screen)
-    lp4.display(screen)
+
+    #draw the lightpoles after the cars so the cars appear to be underneath them
+    for pole in poles: pole.display(screen)
 
     
     #display the FPS (Frames Per Second) and info text

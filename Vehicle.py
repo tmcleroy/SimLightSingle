@@ -3,7 +3,7 @@ pygame.init()
 
 
 #positioning variables
-size = width, height = 1280, 720
+width, height = 1280, 720
 middleX = int(width/2)
 middleY = int(height/2)
 roadWidth = 80
@@ -32,10 +32,8 @@ killDistance = 100
 class Vehicle:
     #CONSTRUCTOR
     def __init__(self, x, y, l, w, color, image, road, lane, pole, light, direction, nextVehic):
-        self.x = x
-        self.y = y
-        self.length = l
-        self.width = w
+        self.x, self.y = x, y
+        self.length, self.width = l, w
         self.color = color
         self.road = road
         self.pole = pole
@@ -55,7 +53,6 @@ class Vehicle:
         #the position of this vehicle is used to prevent collision
         self.nextVehic = nextVehic
 
-
         #set the front facing direction of the vehicle
         #depending on its road, the poleStop value
         #which tells the vehicles where they need to stop at lights
@@ -66,7 +63,6 @@ class Vehicle:
             self.poleSlow = self.poleStop/2
             self.image = pygame.image.load(image)
             self.rect = self.image.get_rect()
-            print (type(self.image))
         elif self.road.id==2:
             self.angle = left
             self.poleStop = self.pole.x+(roadWidth*2)+poleHeight
@@ -105,8 +101,7 @@ class Vehicle:
     #this method draws the vehicle to the screen
     def display(self, screen):
         #pygame.draw.rect(screen, self.color, (self.x,self.y,self.width,self.length))
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.x, self.rect.y = self.x, self.y
         screen.blit(self.image, self.rect)
 
         
@@ -155,7 +150,7 @@ class Vehicle:
 
     #this method determines whether or not a vehicle can accelerate
     #it is only so long because it must contain 4 slightly different
-    #versions of the same code
+    #versions of basically the same code
     def canGo(self):
         if self.road.id == 1:
             if self.light.state == "stop":
