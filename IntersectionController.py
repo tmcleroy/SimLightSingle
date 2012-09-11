@@ -49,17 +49,13 @@ class IntersectionController:
         u = Timer(3, self.setOddEvenState, ["even","stop"])
         t.start()
         u.start()
-        v = Timer(7, self.auto, ["mostPopulated"])
-        v.start()
-
+        
     def evenStraightFlow(self):
         self.setStatesXtoY("go", "slow")
         t = Timer(3, self.setOddEvenState, ["odd","stop"])
         u = Timer(3, self.setOddEvenState, ["even","go"])
         t.start()
         u.start()
-        v = Timer(7, self.auto, ["mostPopulated"])
-        v.start()
 
 
 
@@ -110,7 +106,7 @@ class IntersectionController:
         elif oe == "even":
             for pole in self.evenPoles:
                 pole.light1.setState(state)
-                pole.light2.setState(state)                          
+                pole.light2.setState(state)
 
 
     def setAll(self, state):

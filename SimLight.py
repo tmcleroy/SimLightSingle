@@ -6,6 +6,8 @@ from Road import *
 from Vehicle import *
 from IntersectionController import *
 
+
+
 #positioning variables
 middleX = width/2
 middleY = height/2
@@ -14,16 +16,21 @@ laneWidth = 40
 poleWidth = 80
 poleHeight = 15
 
-#color variables
+#color and filename variables
 black = 0, 0, 0
 white = (255,255,255)
 red = (255,0,0)
 green = (0,255,0)
 blue = (0,0,244)
 grey = (150, 150, 150)
+fname = "car.png"
 
 #the list that will contain all cars
 cars = []
+
+#the list I will use to keep track of the number
+#of cars that pass through the intersection
+passed = [0,0,0,0]
 
 #initialize pygame, the game library used for visually
 #representing the simulation
@@ -125,7 +132,7 @@ def spawnCar(road, lane, os):
         carLight = lp1.light2
         carDir = "forward"
         carNext = carLane.getLastVehicle()
-        car = Vehicle(carX, carY, carLength, carWidth, carColor, carRoad, carLane, carPole, carLight, carDir, carNext)
+        car = Vehicle(carX, carY, carLength, carWidth, carColor, fname, carRoad, carLane, carPole, carLight, carDir, carNext)
         carLane.vehicles.append(car)
         cars.append(car)
     elif road.id == 2:
@@ -141,7 +148,7 @@ def spawnCar(road, lane, os):
         carLight = lp2.light2
         carDir = "forward"
         carNext = carLane.getLastVehicle()
-        car = Vehicle(carX, carY, carLength, carWidth, carColor, carRoad, carLane, carPole, carLight, carDir, carNext)
+        car = Vehicle(carX, carY, carLength, carWidth, carColor, fname, carRoad, carLane, carPole, carLight, carDir, carNext)
         carLane.vehicles.append(car)
         cars.append(car)
     elif road.id == 3:
@@ -157,7 +164,7 @@ def spawnCar(road, lane, os):
         carLight = lp3.light2
         carDir = "forward"
         carNext = carLane.getLastVehicle()
-        car = Vehicle(carX, carY, carLength, carWidth, carColor, carRoad, carLane, carPole, carLight, carDir, carNext)
+        car = Vehicle(carX, carY, carLength, carWidth, carColor, fname, carRoad, carLane, carPole, carLight, carDir, carNext)
         carLane.vehicles.append(car)
         cars.append(car)
     elif road.id == 4:
@@ -173,7 +180,7 @@ def spawnCar(road, lane, os):
         carLight = lp4.light2
         carDir = "forward"
         carNext = carLane.getLastVehicle()
-        car = Vehicle(carX, carY, carLength, carWidth, carColor, carRoad, carLane, carPole, carLight, carDir, carNext)
+        car = Vehicle(carX, carY, carLength, carWidth, carColor, fname, carRoad, carLane, carPole, carLight, carDir, carNext)
         carLane.vehicles.append(car)
         cars.append(car)
 
@@ -225,13 +232,13 @@ while True:
     #cannot handle newline characters
     fpsText = ("FPS: "+str(int(Clock.get_fps())))
     fpsLabel = Font.render(fpsText, 1, black)
-    r1Text = ("Road1: "+str(cont.road1.getNumVehicles()))
+    r1Text = ("Road1: "+str(cont.road1.getNumVehicles())+ "...Passed: "+str(passed[0]))
     r1Label = Font.render(r1Text, 1, black)
-    r2Text = ("Road2: "+str(cont.road2.getNumVehicles()))
+    r2Text = ("Road2: "+str(cont.road2.getNumVehicles())+ "...Passed: "+str(passed[1]))
     r2Label = Font.render(r2Text, 1, black)
-    r3Text = ("Road3: "+str(cont.road3.getNumVehicles()))
+    r3Text = ("Road3: "+str(cont.road3.getNumVehicles())+ "...Passed: "+str(passed[2]))
     r3Label = Font.render(r3Text, 1, black)
-    r4Text = ("Road4: "+str(cont.road4.getNumVehicles()))
+    r4Text = ("Road4: "+str(cont.road4.getNumVehicles())+ "...Passed: "+str(passed[3]))
     r4Label = Font.render(r4Text, 1, black)
     secondsText = ("Seconds Passed: "+str(secondsPassed))
     secondsLabel = Font.render(secondsText, 1, black)
@@ -255,7 +262,9 @@ while True:
     for car in cars:
         car.display(screen)
         car.auto()
-        if car.isOutOfBounds(): cars.remove(car)
+        if car.isOutOfBounds():
+            passed[car.road.id-1] += 1
+            cars.remove(car) 
 
     
     #handle keyboard events

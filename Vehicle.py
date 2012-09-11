@@ -33,7 +33,7 @@ killDistance = 100
 
 class Vehicle:
     #CONSTRUCTOR
-    def __init__(self, x, y, l, w, color, road, lane, pole, light, direction, nextVehic):
+    def __init__(self, x, y, l, w, color, image, road, lane, pole, light, direction, nextVehic):
         self.x = x
         self.y = y
         self.length = l
@@ -59,21 +59,30 @@ class Vehicle:
 
 
         #set the front facing direction of the vehicle
-        #depending on its road. also set the poleStop value
+        #depending on its road, the poleStop value
         #which tells the vehicles where they need to stop at lights
+        #and properly rotate or flip the vehicle image
         if self.road.id==1:
             self.angle = down
             self.poleStop = self.pole.y-(roadWidth*2)-self.length
             self.poleSlow = self.poleStop/2
+            self.image = pygame.image.load(image)
+            self.rect = self.image.get_rect()
         elif self.road.id==2:
             self.angle = left
             self.poleStop = self.pole.x+(roadWidth*2)+poleHeight
+            self.image = pygame.transform.rotate(pygame.image.load(image),270)
+            self.rect = self.image.get_rect()
         elif self.road.id==3:
             self.angle = up
             self.poleStop = self.pole.y+(roadWidth*2)+poleHeight
+            self.image = pygame.transform.flip(pygame.image.load(image), False, True)
+            self.rect = self.image.get_rect()
         elif self.road.id==4:
             self.angle = right
             self.poleStop = self.pole.x-(roadWidth*2)-self.width
+            self.image = pygame.transform.rotate(pygame.image.load(image),90)
+            self.rect = self.image.get_rect()
 
 
 
@@ -96,7 +105,10 @@ class Vehicle:
 
     #this method draws the vehicle to the screen
     def display(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x,self.y,self.width,self.length))
+        #pygame.draw.rect(screen, self.color, (self.x,self.y,self.width,self.length))
+        self.rect.x = self.x
+        self.rect.y = self.y
+        screen.blit(self.image, self.rect)
 
         
 
